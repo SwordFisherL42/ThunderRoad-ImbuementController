@@ -7,11 +7,15 @@ namespace ImbuementController
         public string[] spellIDs = { "Fire", "Lightning", "Gravity"};
         public float energyStepSize = 5.0f;
         public bool useTriggerToCycle = false;
+        public bool autoImbue = false;
+        public string autoImbueSpell = "Fire";
+        public bool permanentImbue = false;
 
         public override void OnItemLoaded(Item item)
         {
             base.OnItemLoaded(item);
-            item.gameObject.AddComponent<ItemCycleCharge>();
+            if (autoImbue) item.gameObject.AddComponent<ItemAutoImbue>();
+            else item.gameObject.AddComponent<ItemCycleCharge>();
         }
     }
 }

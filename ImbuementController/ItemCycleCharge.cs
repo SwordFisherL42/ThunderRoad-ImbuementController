@@ -19,7 +19,10 @@ namespace ImbuementController
         private int counter = 0;
         private string currentSpell;
         private SpellCastCharge activeSpell;
+        //private SpellCastCharge autoImbueSpell;
         private bool isActive;
+        private Interactable.Action triggerAction;
+        private Imbue itemMainImbue;
 
         private void Awake()
         {
@@ -27,16 +30,51 @@ namespace ImbuementController
             module = item.data.GetModule<ItemModuleCycleCharge>();
             item.OnHeldActionEvent += OnHeldAction;
             counter = 0;
+            if (module.useTriggerToCycle) { triggerAction = Interactable.Action.UseStart; }
+            else { triggerAction = Interactable.Action.AlternateUseStart; }
+
+            TryGetItemImbue();
+
+        }
+
+        private void TryGetItemImbue()
+        {
+            try
+            {
+                if (item.imbues.Count > 0) itemMainImbue = item.imbues[0];
+                else itemMainImbue = null;
+            }
+            catch { }
+        }
+
+        private void Start()
+        {
+            if (itemMainImbue == null) TryGetItemImbue();
+        }
+
+        private void LateUpdate()
+        {
+            if (itemMainImbue == null) TryGetItemImbue();
+
+            if (!module.permanentImbue || activeSpell == null || itemMainImbue == null) return;
+
+            if (itemMainImbue.energy < itemMainImbue.maxEnergy)
+            {
+                try { itemMainImbue.Transfer(activeSpell, module.energyStepSize); }
+                catch { }
+
+            }
+
         }
 
         public void OnHeldAction(Interactor interactor, Handle handle, Interactable.Action action)
         {
-            if ((!module.useTriggerToCycle && action == Interactable.Action.AlternateUseStart)
-                ||(module.useTriggerToCycle && action == Interactable.Action.UseStart))
+            if (action == triggerAction)
             {
                 if (isActive) return;
                 if (counter >= module.spellIDs.Length){
                     counter = 0;
+                    activeSpell = null;
                     StartCoroutine(SafeChargeDrain(item.imbues[0], module.energyStepSize));
                     return;
                 }
@@ -52,14 +90,14 @@ namespace ImbuementController
 
         private IEnumerator TransferDeltaEnergy(Imbue itemImbue, SpellCastCharge activeSpell, float energyDelta = 1.0f)
         {
-            int counts = (int) Mathf.Round(200.0f/energyDelta);
+            int counts = (int)Mathf.Round(200.0f / energyDelta);
             isActive = true;
             for (int i = 0; i < counts; i++)
             {
                 try
                 {
                     itemImbue.Transfer(activeSpell, energyDelta);
-                    if (itemImbue.energy == itemImbue.maxEnergy) { break; }
+                    if (itemImbue.energy >= itemImbue.maxEnergy) { break; }
                 }
                 catch { }
                 yield return null;
