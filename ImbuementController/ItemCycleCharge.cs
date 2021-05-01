@@ -44,7 +44,7 @@ namespace ImbuementController
                 if (item.imbues.Count > 0) itemMainImbue = item.imbues[0];
                 else itemMainImbue = null;
             }
-            catch { }
+            catch { Debug.LogError(string.Format("[Fisher-ImbuementController] Exception! Unable to Find/Set main Imbue for item {0}", item.name)); }
         }
 
         private void Start()
@@ -67,7 +67,7 @@ namespace ImbuementController
 
         }
 
-        public void OnHeldAction(Interactor interactor, Handle handle, Interactable.Action action)
+        public void OnHeldAction(RagdollHand interactor, Handle handle, Interactable.Action action)
         {
             if (action == triggerAction)
             {

@@ -20,7 +20,7 @@ namespace ImbuementController
             module = item.data.GetModule<ItemModuleCycleCharge>();
 
             try { autoImbueSpell = Catalog.GetData<SpellCastCharge>(module.autoImbueSpell, true); }
-            catch { Debug.LogError(string.Format("[Fisher-Elemental] Exception! Unable to Find Spell {0}", module.autoImbueSpell)); }
+            catch { Debug.LogError(string.Format("[Fisher-ImbuementController] Exception! Unable to Find Spell {0}", module.autoImbueSpell)); }
 
             TryGetItemImbue();
 
@@ -33,7 +33,7 @@ namespace ImbuementController
                 if (item.imbues.Count > 0) itemMainImbue = item.imbues[0];
                 else itemMainImbue = null;
             }
-            catch { }
+            catch { Debug.LogError(string.Format("[Fisher-ImbuementController] Exception! Unable to Find/Set main Imbue for item {0}", item.name)); }
         }
 
         private void Start()
