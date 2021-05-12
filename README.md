@@ -9,7 +9,7 @@ Each mode can be enabled via the following module settings:
 ```
 "modules": [
   {
-    "$type": "ImbuementController.ItemModuleCycleCharge, ElementalSwords",
+    "$type": "ImbuementController.ItemModuleCycleCharge, AutoImbueFramework",
     "autoImbue": true,
     "autoImbueSpell": "Fire",
     "permanentImbue": true
@@ -21,7 +21,7 @@ Each mode can be enabled via the following module settings:
 ```
 "modules": [
   {
-    "$type": "ImbuementController.ItemModuleCycleCharge, ElementalSwords",
+    "$type": "ImbuementController.ItemModuleCycleCharge, AutoImbueFramework",
     "spellIDs": ["Fire", "Lightning", "Gravity"],
     "useTriggerToCycle": false,
     "permanentImbue": true
